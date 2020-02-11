@@ -15,6 +15,10 @@
                     @endif
 
                     You are logged in!
+                        <br>
+
+
+                    <a href="/projects">Your projects</a>
                 </div>
             </div>
         </div>
