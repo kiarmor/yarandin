@@ -47,7 +47,7 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $projectId
+     * @param  \App\Models\Project $project
      * @return \Illuminate\Http\Response
      */
     public function show($projectId)
