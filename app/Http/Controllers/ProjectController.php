@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Http\Services\ProjectServices;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 /**
@@ -53,8 +54,12 @@ class ProjectController extends Controller
     public function show($projectId)
     {
         $project = $this->projectService->getProject($projectId);
+        $tasks = Task::all()->where('project_id', $projectId); //remove from controller
 
-        return view('Projects.project', ['project' => $project]);
+        return view('Projects.project', [
+            'project' => $project,
+            'tasks' => $tasks,
+        ]);
 
     }
 

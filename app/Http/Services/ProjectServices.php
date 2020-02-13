@@ -17,7 +17,7 @@ class ProjectServices
     public function getProjectsList()
     {
         $projects = DB::table('projects')->paginate(10);
-;
+
         return $projects;
     }
 
