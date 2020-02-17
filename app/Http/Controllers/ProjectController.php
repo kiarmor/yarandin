@@ -24,9 +24,9 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = $this->projectService->getProjectsList();
+        $projects = $this->projectService->getProjectsList($request);
         return view('projects.projects', [
             'projects' => $projects,
         ]);
@@ -48,7 +48,7 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Project $project
+     * @param $projectId
      * @return \Illuminate\Http\Response
      */
     public function show($projectId)
@@ -60,40 +60,44 @@ class ProjectController extends Controller
             'project' => $project,
             'tasks' => $tasks,
         ]);
-
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Project $project
+     * @param $projectId
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $project)
+    public function edit($projectId)
     {
-        //
+        $project = $this->projectService->getProject($projectId);
+
+        return view('Projects.edit_project',[
+            'project' => $project,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Project $project
+     * @param $projectId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(Request $request, $projectId)
     {
-        //
+        $this->projectService->updateProject($request, $projectId);
+
+        return redirect('/projects/' . $projectId);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Project $project
-     *
+     * @param $projectId
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy($projectId, Request $request)
+    public function destroy($projectId)
     {
         $this->projectService->deleteProject($projectId);
 

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Services\TaskServices;
 use App\Models\Project;
 use App\Models\Task;
-use function Couchbase\basicDecoderV1;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
@@ -22,24 +22,15 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function index(Project $projectId)
+    public function index(/*Project $projectId*/)
     {
         //TODO:
         $tasks = $this->taskService->getTasksList();
 
-        return $tasks;
+        return redirect('/projects');
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -51,54 +42,89 @@ class TaskController extends Controller
     {
         $this->taskService->createTask($request);
 
-        return back();
-
+        return redirect("/projects/$request->projectId");
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Task  $task
+     * @param int $taskId
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task)
+    public function show(int $taskId)
     {
-        //
+        $task = $this->taskService->getTask($taskId);
+
+        return view('Tasks.task', [
+            'task' => $task,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Task  $task
+     * @param int $taskId
      * @return \Illuminate\Http\Response
      */
-    public function edit(Task $task)
+    public function edit(int $taskId)
     {
-        //
+        $task = $this->taskService->getTask($taskId);
+
+        return view('Tasks.edit_task', [
+            'task' => $task,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Task  $task
+     * @param  \Illuminate\Http\Request $request
+     * @param int $taskId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $taskId)
+    public function update(Request $request, int $taskId)
     {
         $this->taskService->updateTask($request, $taskId);
 
-        return back();
+        return redirect("/projects/$request->project_id");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Task  $task
+     * @param int $taskId
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
-    public function destroy(Task $task)
+    public function destroy(int $taskId)
     {
-        //
+        $this->taskService->deleteTask($taskId);
+
+        return redirect('/projects');
+    }
+
+    /**
+     * @param $taskId
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function download(int $taskId)
+    {
+        $task = $this->taskService->getTask($taskId);
+
+        return Storage::download($task->path);
+    }
+
+    /**
+     * @param Request $request
+     * @param $projectId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function statusSelect(Request $request, int $projectId)
+    {
+        $tasks = $this->taskService->statusSelectList($request, $projectId);
+
+        return view('Tasks.tasks',[
+            'tasks' => $tasks,
+            ]);
     }
 }

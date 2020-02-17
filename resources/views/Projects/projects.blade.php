@@ -22,13 +22,16 @@
                             <th>ID</th>
                             <th>Project name</th>
                             <th>Project Description</th>
+                            <th>User</th>
                         </thead>
                         <tbody>
                     @foreach($projects as $project)
                         <tr>
                             <td>{{$project->id}}</td>
-                            <td><a href="/projects/{{$project->id}}">{{$project->project_name}}</a></td>
+                            <td><a href="/projects/{{$project->id}}">{{$project->project_name}}</a>
+                            </td>
                             <td>{{$project->description}}</td>
+                            <td>{{$project->user_id}}</td>
                         </tr>
                     @endforeach
                         </tbody>

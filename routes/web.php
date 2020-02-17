@@ -17,8 +17,14 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => 'auth'], function (){
+    Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('projects', 'ProjectController')->middleware('auth');
+    Route::resource('projects', 'ProjectController');
 
-Route::resource('tasks', 'TaskController')->middleware('auth');
+    Route::resource('tasks', 'TaskController');
+
+    Route::get('tasks/{id}/download', 'TaskController@download')->name('download');
+
+    Route::get('projects/{id}/status/{status}', 'TaskController@statusSelect');
+});

@@ -15,32 +15,77 @@ use Illuminate\Support\Facades\DB;
 
 class TaskServices
 {
+    /**
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function getTasksList()
     {
         $tasks = DB::table('tasks')->paginate(10);
 
         return $tasks;
-
     }
 
-    public function updateTask(Request $request, $taskId)
+    /**
+     * @param int $taskId
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+     */
+    public function getTask(int $taskId)
     {
-       /* var_dump($request->status);
-        die();*/
         $task = Task::query()->findOrFail($taskId);
+
+        return $task;
+    }
+
+    /**
+     * @param Request $request
+     * @param int $taskId
+     */
+    public function updateTask(Request $request, int $taskId)
+    {
+        $task = Task::query()->findOrFail($taskId);
+        $task->task = $request->task;
         $task->status = $request->status;
         $task->save();
     }
 
 
+    /**
+     * @param Request $request
+     * @return Task
+     */
     public function createTask(Request $request)
     {
         $task = new Task();
         $task->task = request('task');
         $task->project_id = request('projectId');
+        if (!empty($request->user_file)) {
+            $request->user_file->store('tasks_files');
+            $task->path = $request->user_file->store('tasks_files');
+        }
         $task->save();
 
         return $task;
+    }
+
+    /**
+     * @param int $taskId
+     * @throws \Exception
+     */
+    public function deleteTask(int $taskId)
+    {
+        Task::query()->findOrFail($taskId)->delete();
+    }
+
+    /**
+     * @param $request
+     * @param $projectId
+     * @return Task[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function statusSelectList($request, $projectId)
+    {
+        $tasks = Task::all()->where('status', $request->status)->where('project_id', $projectId);
+
+        return $tasks;
     }
 
 }
