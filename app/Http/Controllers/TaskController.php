@@ -38,22 +38,22 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
-        $this->taskService->createTask($request);
+        $this->taskService->createTask($request, $project);
 
-        return redirect("/projects/$request->projectId");
+        return redirect("/projects/$project->id");
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $taskId
+     * @param Task $task
      * @return \Illuminate\Http\Response
      */
-    public function show(int $taskId)
+    public function show(Task $task)
     {
-        $task = $this->taskService->getTask($taskId);
+        $task = $this->taskService->getTask($task);
 
         return view('Tasks.task', [
             'task' => $task,

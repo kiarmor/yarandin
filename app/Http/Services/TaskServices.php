@@ -12,6 +12,7 @@ namespace App\Http\Services;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Project;
 
 class TaskServices
 {
@@ -29,9 +30,9 @@ class TaskServices
      * @param int $taskId
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
      */
-    public function getTask(int $taskId)
+    public function getTask(Task $task)
     {
-        $task = Task::query()->findOrFail($taskId);
+        $task = Task::query()->findOrFail($task->id);
 
         return $task;
     }
@@ -53,11 +54,11 @@ class TaskServices
      * @param Request $request
      * @return Task
      */
-    public function createTask(Request $request)
+    public function createTask(Request $request, Project $project)
     {
         $task = new Task();
         $task->task = request('task');
-        $task->project_id = request('projectId');
+        $task->project_id = $project->id;
         if (!empty($request->user_file)) {
             $request->user_file->store('tasks_files');
             $task->path = $request->user_file->store('tasks_files');

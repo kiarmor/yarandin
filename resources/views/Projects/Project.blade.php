@@ -10,10 +10,10 @@
     <p>Project description: {{$project->description}}</p>
 
     <a>Create new task</a>
-    <form action="/tasks" method="POST" enctype="multipart/form-data">
+    <form action="/projects/{{$project->id}}/tasks" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="text" name="task" placeholder="Task" class="form-control">
-        <input name="projectId" value="{{$project->id}}" hidden>
+        {{--<input name="projectId" value="{{$project->id}}" hidden>--}}
         <input type="file" name="user_file">
         <input type="submit" class="btn btn-success" value="Create">
 
@@ -38,7 +38,7 @@
         @foreach($tasks as $task)
             <tr>
                 <td>{{$task->id}}</td>
-                <td><a href="/../tasks/{{$task->id}}">{{$task->task}}</a></td>
+                <td><a href="/projects/{{$project->id}}/tasks/{{$task->id}}">{{$task->task}}</a></td>
                 <td>{{$task->status}}</td>
                 <td>{{$project->id}}</td>
                 <td>

@@ -22,6 +22,7 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -48,13 +49,15 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $projectId
+     * @param Project $project
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($projectId)
+    public function show(Project $project)
     {
-        $project = $this->projectService->getProject($projectId);
-        $tasks = Task::all()->where('project_id', $projectId); //remove from controller
+        $this->authorize('update', $project);
+        $project = $this->projectService->getProject($project);
+        $tasks = Task::all()->where('project_id', $project->id); //remove from controller
 
         return view('Projects.project', [
             'project' => $project,
@@ -65,12 +68,14 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param $projectId
+     * @param Project $project
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($projectId)
+    public function edit(Project $project)
     {
-        $project = $this->projectService->getProject($projectId);
+        $this->authorize('update', $project);
+        $project = $this->projectService->getProject($project);
 
         return view('Projects.edit_project',[
             'project' => $project,
@@ -81,25 +86,29 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param $projectId
+     * @param Project $project
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, $projectId)
+    public function update(Request $request, Project $project)
     {
-        $this->projectService->updateProject($request, $projectId);
+        $this->authorize('update', $project);
+        $this->projectService->updateProject($request, $project);
 
-        return redirect('/projects/' . $projectId);
+        return redirect('/projects/' . $project->id);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param $projectId
+     * @param Project $project
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($projectId)
+    public function destroy(Project $project)
     {
-        $this->projectService->deleteProject($projectId);
+        $this->authorize('update', $project);
+        $this->projectService->deleteProject($project);
 
         return redirect('/projects');
     }

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 class ProjectServices
 {
     /**
+     * @param Request $request
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getProjectsList(Request $request)
@@ -42,29 +43,29 @@ class ProjectServices
     }
 
     /**
-     * @param int $projectId
+     * @param Project $project
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
      */
-    public function getProject(int $projectId)
+    public function getProject(Project $project)
     {
-        $project = Project::query()->findOrFail($projectId);
+        $project = Project::query()->findOrFail($project->id);
 
         return $project;
     }
 
-    public function deleteProject(int $projectId)
+    public function deleteProject(Project $project)
     {
-        Project::query()->findOrFail($projectId)->delete();
+        Project::query()->findOrFail($project->id)->delete();
     }
 
     /**
      * @param Request $request
-     * @param int $projectId
+     * @param Project $project
      */
-    public function updateProject(Request $request, int $projectId)
+    public function updateProject(Request $request, Project $project)
     {
 
-        $project = Project::query()->findOrFail($projectId);
+        $project = Project::query()->findOrFail($project->id);
         $project->project_name = $request->project_name;
         $project->description = $request->description;
         $project->save();
