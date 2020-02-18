@@ -23,7 +23,7 @@ Route::group(['middleware' => 'auth'], function (){
 
     Route::resource('projects', 'ProjectController');
 
-    Route::resource('projects/{id}/tasks', 'TaskController');
+    Route::resource('tasks', 'TaskController');
 
     Route::get('tasks/{id}/download', 'TaskController@download')->name('download');
 

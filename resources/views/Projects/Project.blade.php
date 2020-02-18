@@ -10,10 +10,10 @@
     <p>Project description: {{$project->description}}</p>
 
     <a>Create new task</a>
-    <form action="/projects/{{$project->id}}/tasks" method="POST" enctype="multipart/form-data">
+    <form action="/../tasks" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="text" name="task" placeholder="Task" class="form-control">
-        {{--<input name="projectId" value="{{$project->id}}" hidden>--}}
+        <input name="projectId" value="{{$project->id}}" hidden>
         <input type="file" name="user_file">
         <input type="submit" class="btn btn-success" value="Create">
 

@@ -58,7 +58,8 @@ class TaskServices
     {
         $task = new Task();
         $task->task = request('task');
-        $task->project_id = $project->id;
+        //$task->project_id = $project->id;
+        $task->project_id = request('projectId');
         if (!empty($request->user_file)) {
             $request->user_file->store('tasks_files');
             $task->path = $request->user_file->store('tasks_files');
